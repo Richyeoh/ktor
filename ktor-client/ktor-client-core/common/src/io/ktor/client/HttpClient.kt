@@ -1,6 +1,6 @@
 /*
- * Copyright 2014-2019 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
- */
+* Copyright 2014-2021 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
+*/
 
 package io.ktor.client
 
@@ -152,6 +152,7 @@ public class HttpClient(
 
         with(userConfig) {
             config.install(HttpRequestLifecycle)
+            config.install(BodyProgress)
 
             if (useDefaultTransformers) {
                 config.install(HttpPlainText)
@@ -177,7 +178,6 @@ public class HttpClient(
     /**
      * Creates a new [HttpRequest] from a request [data] and a specific client [call].
      */
-
     @Deprecated(
         "Unbound [HttpClientCall] is deprecated. Consider using [request<HttpResponse>(builder)] instead.",
         level = DeprecationLevel.ERROR,

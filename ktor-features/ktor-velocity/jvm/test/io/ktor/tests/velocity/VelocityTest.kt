@@ -46,7 +46,9 @@ class VelocityTest {
     fun testCompression() {
         withTestApplication {
             application.setUpTestTemplates()
-            application.install(Compression)
+            application.install(Compression) {
+                gzip { minimumSize(10) }
+            }
             application.install(ConditionalHeaders)
 
             application.routing {
@@ -119,8 +121,8 @@ class VelocityTest {
 
                 val lines = content!!.lines()
 
-                assertEquals(lines[0], "<p>Hello, 1</p>")
-                assertEquals(lines[1], "<h1>Bonjour le monde!</h1>")
+                assertEquals("<p>Hello, 1</p>", lines[0])
+                assertEquals("<h1>Bonjour le monde!</h1>", lines[1])
             }
         }
     }
@@ -130,18 +132,19 @@ class VelocityTest {
 
         install(Velocity) {
             setProperty("resource.loader", "string")
-            addProperty("string.resource.loader.class", StringResourceLoader::class.java.name)
-            addProperty("string.resource.loader.repository.static", "false")
-            init() // need to call `init` before trying to retrieve string repository
+            addProperty("resource.loader.string.class", StringResourceLoader::class.java.name)
+            addProperty("resource.loader.string.repository.name", "myRepo")
 
-            val repo = getApplicationAttribute(StringResourceLoader.REPOSITORY_NAME_DEFAULT) as StringResourceRepository
-            repo.putStringResource(
-                "test.vl",
-                """
-                        <p>Hello, ${bax}id</p>
-                        <h1>${bax}title</h1>
-                """.trimIndent()
-            )
+            StringResourceRepositoryImpl().apply {
+                putStringResource(
+                    "test.vl",
+                    """
+                    <p>Hello, ${bax}id</p>
+                    <h1>${bax}title</h1>
+                    """.trimIndent()
+                )
+                StringResourceLoader.setRepository("myRepo", this)
+            }
         }
     }
 }

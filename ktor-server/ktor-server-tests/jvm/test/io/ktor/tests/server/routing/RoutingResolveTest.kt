@@ -76,6 +76,19 @@ class RoutingResolveTest {
     }
 
     @Test
+    fun testMatchingRoot() {
+        val root = routing("context/path")
+        root.handle { }
+
+        on("resolving /context/path") {
+            val result = resolve(root, "/context/path")
+            it("should succeed") {
+                assertTrue(result is RoutingResolveResult.Success)
+            }
+        }
+    }
+
+    @Test
     fun `custom root path`() {
         val root = routing("context/path")
         root.handle(PathSegmentConstantRouteSelector("foo"))
@@ -94,7 +107,7 @@ class RoutingResolveTest {
         }
         on("resolving /context/path") {
             val result = resolve(root, "/context/path")
-            it("should succeed") {
+            it("shouldn't succeed") {
                 assertTrue(result is RoutingResolveResult.Failure)
             }
         }
@@ -131,7 +144,7 @@ class RoutingResolveTest {
         }
         on("resolving /context/path") {
             val result = resolve(root, "/context/path")
-            it("should succeed") {
+            it("shouldn't succeed") {
                 assertTrue(result is RoutingResolveResult.Failure)
             }
         }
@@ -168,9 +181,6 @@ class RoutingResolveTest {
             it("should not succeed") {
                 assertTrue(result is RoutingResolveResult.Failure)
             }
-            it("should have fooEntry as fail entry") {
-                assertEquals(fooEntry, result.route)
-            }
         }
     }
 
@@ -192,9 +202,6 @@ class RoutingResolveTest {
             val result = resolve(root, "/foo/bar")
             it("should not succeed") {
                 assertTrue(result is RoutingResolveResult.Failure)
-            }
-            it("should have fooEntry as fail entry") {
-                assertEquals(fooEntry, result.route)
             }
         }
     }
@@ -755,7 +762,7 @@ class RoutingResolveTest {
                 method = HttpMethod.Get
             }
             it("/foo/ should not be called") {
-                assertFalse(result.requestHandled)
+                assertFalse(result.response.status()!!.isSuccess())
             }
         }
 
@@ -774,7 +781,58 @@ class RoutingResolveTest {
                 method = HttpMethod.Get
             }
             it("/bar should not be called") {
-                assertFalse(result.requestHandled)
+                assertFalse(result.response.status()!!.isSuccess())
+            }
+        }
+    }
+
+    @Test
+    fun testRoutingTrailingSlashInLeafRouteAndIgnoredTrailingSlash() = withTestApplication {
+        application.install(IgnoreTrailingSlash)
+        application.routing {
+            get("foo/") {
+                call.respondText("foo/")
+            }
+            get("bar") {
+                call.respondText("bar")
+            }
+        }
+
+        on("making /foo/ request") {
+            val result = handleRequest {
+                uri = "/foo/"
+                method = HttpMethod.Get
+            }
+            it("/foo/ should be called") {
+                assertEquals("foo/", result.response.content)
+            }
+        }
+        on("making /foo request") {
+            val result = handleRequest {
+                uri = "/foo"
+                method = HttpMethod.Get
+            }
+            it("/foo/ should be called") {
+                assertEquals("foo/", result.response.content)
+            }
+        }
+
+        on("making /bar request") {
+            val result = handleRequest {
+                uri = "/bar"
+                method = HttpMethod.Get
+            }
+            it("/bar should not be called") {
+                assertEquals("bar", result.response.content)
+            }
+        }
+        on("making /bar/ request") {
+            val result = handleRequest {
+                uri = "/bar/"
+                method = HttpMethod.Get
+            }
+            it("/bar should be called") {
+                assertEquals("bar", result.response.content)
             }
         }
     }
@@ -849,7 +907,52 @@ class RoutingResolveTest {
                 method = HttpMethod.Get
             }
             it("/foo/ should not be called") {
-                assertFalse(result.requestHandled)
+                assertFalse(result.response.status()!!.isSuccess())
+            }
+        }
+    }
+
+    @Test
+    fun testRoutingWithTrailingSlashInNonLeafRouteAndDoNotIgnoreTrailing() = withTestApplication {
+        application.install(IgnoreTrailingSlash)
+        application.routing {
+            route("foo/") {
+                get("bar/") {
+                    call.respondText("foo/bar/")
+                }
+                handle {
+                    call.respondText("foo/")
+                }
+            }
+        }
+
+        on("making /foo/bar/ request") {
+            val result = handleRequest {
+                uri = "/foo/bar/"
+                method = HttpMethod.Get
+            }
+            it("/foo/bar should be called") {
+                assertEquals("foo/bar/", result.response.content)
+            }
+        }
+
+        on("making /foo/ request") {
+            val result = handleRequest {
+                uri = "/foo/"
+                method = HttpMethod.Get
+            }
+            it("/foo/ should be called") {
+                assertEquals("foo/", result.response.content)
+            }
+        }
+
+        on("making /foo request") {
+            val result = handleRequest {
+                uri = "/foo"
+                method = HttpMethod.Get
+            }
+            it("/foo/ should be called") {
+                assertEquals("foo/", result.response.content)
             }
         }
     }
@@ -963,7 +1066,7 @@ class RoutingResolveTest {
                 method = HttpMethod.Get
             }
             it("bar should not be called") {
-                assertFalse(result.requestHandled)
+                assertFalse(result.response.status()!!.isSuccess())
             }
         }
         on("making baz request") {
@@ -972,7 +1075,7 @@ class RoutingResolveTest {
                 method = HttpMethod.Get
             }
             it("baz/ should not be called") {
-                assertFalse(result.requestHandled)
+                assertFalse(result.response.status()!!.isSuccess())
             }
         }
     }
@@ -984,8 +1087,11 @@ class RoutingResolveTest {
                 get("/foo") {
                     call.respondText("foo")
                 }
+                get("/bar/") {
+                    call.respondText("bar/")
+                }
                 handle {
-                    call.respondText("bar")
+                    call.respondText("baz")
                 }
             }
         }
@@ -996,7 +1102,7 @@ class RoutingResolveTest {
                 method = HttpMethod.Get
             }
             it("/ should be called") {
-                assertEquals("bar", result.response.content)
+                assertEquals("baz", result.response.content)
             }
         }
         on("making foo request") {
@@ -1006,6 +1112,48 @@ class RoutingResolveTest {
             }
             it("foo should be called") {
                 assertEquals("foo", result.response.content)
+            }
+        }
+        on("making bar/ request") {
+            val result = handleRequest {
+                uri = "/bar/"
+                method = HttpMethod.Get
+            }
+            it("bar/ should be called") {
+                assertEquals("bar/", result.response.content)
+            }
+        }
+    }
+
+    @Test
+    fun testRoutingMatchesWithMethod() = withTestApplication {
+        application.routing {
+            route("/") {
+                get {
+                    call.respondText("foo")
+                }
+                handle {
+                    call.respondText("bar")
+                }
+            }
+        }
+
+        on("making get request") {
+            val result = handleRequest {
+                uri = "/"
+                method = HttpMethod.Get
+            }
+            it("/:get should be called") {
+                assertEquals("foo", result.response.content)
+            }
+        }
+        on("making post request") {
+            val result = handleRequest {
+                uri = "/"
+                method = HttpMethod.Post
+            }
+            it("/ should be called") {
+                assertEquals("bar", result.response.content)
             }
         }
     }
@@ -1054,7 +1202,7 @@ class RoutingResolveTest {
                 method = HttpMethod.Get
             }
             it("/test should not be called") {
-                assertFalse(result.requestHandled)
+                assertFalse(result.response.status()!!.isSuccess())
             }
         }
         on("making /test/ request") {
@@ -1063,7 +1211,7 @@ class RoutingResolveTest {
                 method = HttpMethod.Get
             }
             it("/test/ should not be called") {
-                assertFalse(result.requestHandled)
+                assertFalse(result.response.status()!!.isSuccess())
             }
         }
         on("making /test/foo request") {
@@ -1090,7 +1238,7 @@ class RoutingResolveTest {
                 method = HttpMethod.Get
             }
             it("/test/*/foo should not be called") {
-                assertFalse(result.requestHandled)
+                assertFalse(result.response.status()!!.isSuccess())
             }
         }
         on("making /test/bar/foo request") {
@@ -1117,7 +1265,7 @@ class RoutingResolveTest {
                 method = HttpMethod.Get
             }
             it("/test/ should not be called") {
-                assertFalse(result.requestHandled)
+                assertFalse(result.response.status()!!.isSuccess())
             }
         }
         on("making /test/foo request") {
@@ -1165,10 +1313,12 @@ class RoutingResolveTest {
         val root = routing()
         val siblingTop = root.handle(PathSegmentParameterRouteSelector("sibling", "top"))
         val transparentEntryTop = root.createChild(
-            object : RouteSelector(RouteSelectorEvaluation.qualityTransparent) {
+            object : RouteSelector() {
                 override fun evaluate(context: RoutingResolveContext, segmentIndex: Int): RouteSelectorEvaluation {
                     return RouteSelectorEvaluation(true, RouteSelectorEvaluation.qualityTransparent)
                 }
+
+                override fun toString(): String = "transparent"
             }
         )
         // inner entry has lower priority then its siblings

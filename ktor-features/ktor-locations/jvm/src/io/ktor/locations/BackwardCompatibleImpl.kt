@@ -1,6 +1,6 @@
 /*
- * Copyright 2014-2020 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
- */
+* Copyright 2014-2021 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
+*/
 
 package io.ktor.locations
 
@@ -131,7 +131,11 @@ internal class BackwardCompatibleImpl(
             parameter to value
         }.filterNot { it.first.isOptional && it.second == null }.toMap()
 
-        return constructor.callBy(arguments)
+        try {
+            return constructor.callBy(arguments)
+        } catch (cause: InvocationTargetException) {
+            throw cause.cause ?: cause
+        }
     }
 
     private fun createFromParameters(parameters: Parameters, name: String, type: Type, optional: Boolean): Any? {

@@ -1,6 +1,6 @@
 /*
- * Copyright 2014-2020 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
- */
+* Copyright 2014-2021 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
+*/
 
 package io.ktor.server.testing.suites
 
@@ -17,16 +17,17 @@ import io.ktor.server.engine.*
 import io.ktor.server.testing.*
 import io.ktor.utils.io.*
 import io.ktor.utils.io.jvm.javaio.*
+import org.junit.*
+import org.junit.Assert.*
 import java.io.*
 import java.util.zip.*
-import kotlin.test.*
 
-public abstract class CompressionTestSuite<TEngine : ApplicationEngine,
-    TConfiguration : ApplicationEngine.Configuration>(hostFactory: ApplicationEngineFactory<TEngine, TConfiguration>) :
-    EngineTestBase<TEngine, TConfiguration>(hostFactory) {
+abstract class CompressionTestSuite<TEngine : ApplicationEngine, TConfiguration : ApplicationEngine.Configuration>(
+    hostFactory: ApplicationEngineFactory<TEngine, TConfiguration>
+) : EngineTestBase<TEngine, TConfiguration>(hostFactory) {
 
     @Test
-    public fun testLocalFileContentWithCompression() {
+    fun testLocalFileContentWithCompression() {
         val file = loadTestFile()
         testLog.trace("test file is $file")
 
@@ -45,7 +46,7 @@ public abstract class CompressionTestSuite<TEngine : ApplicationEngine,
     }
 
     @Test
-    public fun testStreamingContentWithCompression() {
+    fun testStreamingContentWithCompression() {
         val file = loadTestFile()
         testLog.trace("test file is $file")
 
@@ -70,7 +71,7 @@ public abstract class CompressionTestSuite<TEngine : ApplicationEngine,
     }
 
     @Test
-    public fun testLocalFileContentRangeWithCompression() {
+    fun testLocalFileContentRangeWithCompression() {
         val file = loadTestFile()
         testLog.trace("test file is $file")
 
@@ -95,15 +96,15 @@ public abstract class CompressionTestSuite<TEngine : ApplicationEngine,
         ) {
             assertEquals(HttpStatusCode.PartialContent.value, status.value)
             assertEquals(
+                "It should be no compression if range requested",
                 file.reader().use { it.read().toChar().toString() },
-                readText(),
-                "It should be no compression if range requested"
+                readText()
             )
         }
     }
 
     @Test
-    public fun testCompressionWriteToLarge() {
+    fun testCompressionWriteToLarge() {
         val count = 655350
         fun Appendable.produceText() {
             for (i in 1..count) {
@@ -126,7 +127,7 @@ public abstract class CompressionTestSuite<TEngine : ApplicationEngine,
             val expected = buildString {
                 produceText()
             }
-            assertTrue { HttpHeaders.ContentEncoding in headers }
+            assertTrue(HttpHeaders.ContentEncoding in headers)
             val array = receive<ByteArray>()
             val text = GZIPInputStream(ByteArrayInputStream(array)).readBytes().toString(Charsets.UTF_8)
             assertEquals(expected, text)

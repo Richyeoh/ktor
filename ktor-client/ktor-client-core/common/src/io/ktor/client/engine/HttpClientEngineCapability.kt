@@ -1,6 +1,6 @@
 /*
- * Copyright 2014-2019 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
- */
+* Copyright 2014-2021 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
+*/
 
 package io.ktor.client.engine
 
@@ -11,7 +11,6 @@ import kotlin.native.concurrent.*
 /**
  * Key required to access capabilities.
  */
-@KtorExperimentalAPI
 @SharedImmutable
 internal val ENGINE_CAPABILITIES_KEY =
     AttributeKey<MutableMap<HttpClientEngineCapability<*>, Any>>("EngineCapabilities")
@@ -19,7 +18,6 @@ internal val ENGINE_CAPABILITIES_KEY =
 /**
  * Default capabilities expected to be supported by engine.
  */
-@KtorExperimentalAPI
 @SharedImmutable
 public val DEFAULT_CAPABILITIES: Set<HttpTimeout.Feature> = setOf(HttpTimeout)
 

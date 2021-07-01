@@ -1,12 +1,12 @@
 /*
- * Copyright 2014-2020 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
- */
+* Copyright 2014-2021 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
+*/
 
 package io.ktor.server.engine
 
 import io.ktor.application.*
 import io.ktor.config.*
-import io.ktor.util.PlatformUtils
+import io.ktor.util.*
 import org.slf4j.*
 import kotlin.coroutines.*
 

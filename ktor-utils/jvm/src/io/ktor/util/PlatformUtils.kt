@@ -1,6 +1,6 @@
 /*
- * Copyright 2014-2020 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
- */
+* Copyright 2014-2021 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
+*/
 
 package io.ktor.util
 
@@ -13,8 +13,5 @@ public actual object PlatformUtils {
     public actual val IS_NATIVE: Boolean = false
 
     public actual val IS_DEVELOPMENT_MODE: Boolean =
-        System.getProperty(DEVELOPMENT_MODE_KEY)?.toBoolean() ?: isAssertionEnabled()
+        System.getProperty(DEVELOPMENT_MODE_KEY)?.toBoolean() == true
 }
-
-private fun isAssertionEnabled(): Boolean =
-    PlatformUtils::class.java.desiredAssertionStatus()

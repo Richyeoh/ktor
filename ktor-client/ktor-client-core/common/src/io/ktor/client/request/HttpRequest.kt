@@ -1,6 +1,6 @@
 /*
- * Copyright 2014-2019 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
- */
+* Copyright 2014-2021 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
+*/
 
 package io.ktor.client.request
 
@@ -84,7 +84,6 @@ public class HttpRequestBuilder : HttpMessageBuilder {
     /**
      * A deferred used to control the execution of this request.
      */
-    @KtorExperimentalAPI
     public var executionContext: Job = SupervisorJob()
         .also { it.makeShared() }
         internal set(value) {
@@ -147,7 +146,6 @@ public class HttpRequestBuilder : HttpMessageBuilder {
     /**
      * Set capability configuration.
      */
-    @KtorExperimentalAPI
     public fun <T : Any> setCapability(key: HttpClientEngineCapability<T>, capability: T) {
         val capabilities = attributes.computeIfAbsent(ENGINE_CAPABILITIES_KEY) { sharedMap() }
         capabilities[key] = capability
@@ -156,7 +154,6 @@ public class HttpRequestBuilder : HttpMessageBuilder {
     /**
      * Retrieve capability by key.
      */
-    @KtorExperimentalAPI
     public fun <T : Any> getCapabilityOrNull(key: HttpClientEngineCapability<T>): T? {
         @Suppress("UNCHECKED_CAST")
         return attributes.getOrNull(ENGINE_CAPABILITIES_KEY)?.get(key) as T?
@@ -180,7 +177,6 @@ public class HttpRequestData @InternalAPI constructor(
     /**
      * Retrieve extension by it's key.
      */
-    @KtorExperimentalAPI
     public fun <T> getCapabilityOrNull(key: HttpClientEngineCapability<T>): T? {
         @Suppress("UNCHECKED_CAST")
         return attributes.getOrNull(ENGINE_CAPABILITIES_KEY)?.get(key) as T?
@@ -294,12 +290,4 @@ public fun HttpRequestBuilder.url(urlString: String): Unit { // ktlint-disable f
 @Suppress("KDocMissingDocumentation")
 public fun HttpRequestData.isUpgradeRequest(): Boolean {
     return body is ClientUpgradeContent
-}
-
-@PublicAPICandidate("1.6.0") // move to ktor-util
-internal fun Attributes.putAll(other: Attributes) {
-    other.allKeys.forEach {
-        @Suppress("UNCHECKED_CAST")
-        put(it as AttributeKey<Any>, other[it])
-    }
 }

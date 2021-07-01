@@ -1,6 +1,6 @@
 /*
- * Copyright 2014-2020 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
- */
+* Copyright 2014-2021 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
+*/
 
 package io.ktor.tests.server.features
 
@@ -75,7 +75,7 @@ class CachingHeadersTest {
         }
 
         handleRequest(HttpMethod.Get, "/").let { call ->
-            assertTrue(call.requestHandled)
+            assertTrue(call.response.status()!!.isSuccess())
             assertEquals("test", call.response.content?.trim())
             test(call)
         }

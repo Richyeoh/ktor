@@ -1,16 +1,13 @@
 /*
- * Copyright 2014-2019 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
- */
+* Copyright 2014-2021 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
+*/
 
 package io.ktor.client.utils
-
-import io.ktor.util.*
 
 /**
  * List of [CacheControl] known values.
  */
 @Suppress("KDocMissingDocumentation", "MemberVisibilityCanBePrivate")
-@KtorExperimentalAPI
 public object CacheControl {
     public const val MAX_AGE: String = "max-age"
     public const val MIN_FRESH: String = "min-fresh"

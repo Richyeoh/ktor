@@ -1,6 +1,6 @@
 /*
- * Copyright 2014-2020 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
- */
+* Copyright 2014-2021 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
+*/
 
 package io.ktor.client.engine.cio
 
@@ -35,7 +35,6 @@ internal class Endpoint(
     override val coroutineContext: CoroutineContext,
     private val onDone: () -> Unit
 ) : CoroutineScope, Closeable {
-    private val address = NetworkAddress(host, port)
     private val lastActivity = atomic(GMTDate())
     private val connections: AtomicInt = atomic(0)
     private val deliveryPoint: Channel<RequestTask> = Channel()
@@ -179,6 +178,8 @@ internal class Endpoint(
 
         try {
             repeat(connectAttempts) {
+                val address = NetworkAddress(host, port)
+
                 val connect: suspend CoroutineScope.() -> Socket = {
                     connectionFactory.connect(address) {
                         this.socketTimeout = socketTimeout

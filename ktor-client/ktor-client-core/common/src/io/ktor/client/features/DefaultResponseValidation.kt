@@ -1,6 +1,6 @@
 /*
- * Copyright 2014-2019 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
- */
+* Copyright 2014-2021 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
+*/
 
 package io.ktor.client.features
 
@@ -111,6 +111,6 @@ public class ClientRequestException(
     @Deprecated(level = DeprecationLevel.WARNING, message = DEPRECATED_EXCEPTION_CTOR)
     public constructor(response: HttpResponse) : this(response, NO_RESPONSE_TEXT)
 
-    override val message: String? = "Client request(${response.call.request.url}) " +
+    override val message: String = "Client request(${response.call.request.url}) " +
         "invalid: ${response.status}. Text: \"$cachedResponseText\""
 }

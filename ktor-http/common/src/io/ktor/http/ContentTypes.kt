@@ -1,6 +1,6 @@
 /*
- * Copyright 2014-2020 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
- */
+* Copyright 2014-2021 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
+*/
 
 package io.ktor.http
 
@@ -268,4 +268,10 @@ public fun ContentType.withCharset(charset: Charset): ContentType = withParamete
 /**
  * Extracts a [Charset] value from the given `Content-Type`, `Content-Disposition` or similar header value.
  */
-public fun HeaderValueWithParameters.charset(): Charset? = parameter("charset")?.let { Charset.forName(it) }
+public fun HeaderValueWithParameters.charset(): Charset? = parameter("charset")?.let {
+    try {
+        Charset.forName(it)
+    } catch (exception: IllegalArgumentException) {
+        null
+    }
+}

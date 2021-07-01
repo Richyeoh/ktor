@@ -69,6 +69,24 @@ class LocationsTest {
         urlShouldBeUnhandled("/about/123")
     }
 
+    @Location("/error")
+    class Build(val build: String) {
+        init {
+            require(build.length > 0)
+        }
+    }
+
+    @Test fun testLocationWithException() = withLocationsApplication {
+        application.routing {
+            get<Build> {
+            }
+        }
+
+        assertFailsWith<IllegalArgumentException> {
+            urlShouldBeHandled("/error?build=")
+        }
+    }
+
     @Location("/user/{id}")
     class user(val id: Int)
 
@@ -539,6 +557,32 @@ class LocationsTest {
         // illegal value for numeric property
         handleRequest(HttpMethod.Get, "/?text=abc&number=${Long.MAX_VALUE}&longNumber=2").let { call ->
             assertEquals(HttpStatusCode.BadRequest, call.response.status())
+        }
+    }
+
+    @Test
+    @Suppress("DEPRECATION")
+    fun testLocationOrNull() {
+        withLocationsApplication {
+            application.routing {
+                get<index> { index ->
+                    assertSame(index, call.locationOrNull())
+                    assertSame(index, call.location())
+                    call.respondText("OK")
+                }
+                get("/no-location") {
+                    assertFails {
+                        assertNull(call.locationOrNull<index>())
+                    }
+                    assertFails {
+                        assertNull(call.location<index>())
+                    }
+                    call.respondText("OK")
+                }
+            }
+
+            urlShouldBeHandled("/", "OK")
+            urlShouldBeHandled("/no-location", "OK")
         }
     }
 }

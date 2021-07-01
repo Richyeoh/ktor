@@ -1,3 +1,83 @@
+# 1.6.1
+> Published 1 July 2021
+
+* Linked back to site from Docs ([KTOR-2843](https://youtrack.jetbrains.com/issue/KTOR-2843))
+* Fixed unbound public symbol for public io.ktor.network.sockets/SocketTimeoutException when iosArm64 framework ([KTOR-2276](https://youtrack.jetbrains.com/issue/KTOR-2276))
+* Fixed configureBootstrap hook overwritten by Ktor settings ([KTOR-356](https://youtrack.jetbrains.com/issue/KTOR-356))
+* Fixed crypto is undefined in IE11 ([KTOR-409](https://youtrack.jetbrains.com/issue/KTOR-409))
+* Added support for X-Forwarded-Port header in XForwardedHeaderSupport plugin ([KTOR-2788](https://youtrack.jetbrains.com/issue/KTOR-2788))
+* Fixed StatusPages doesn't catch FreeMarker exceptions ([KTOR-343](https://youtrack.jetbrains.com/issue/KTOR-343))
+* Fixed java.nio.charset.IllegalCharsetNameException: %s ([KTOR-2645](https://youtrack.jetbrains.com/issue/KTOR-2645))
+* Added application startup and hot-reloading time log ([KTOR-2816](https://youtrack.jetbrains.com/issue/KTOR-2816))
+* Added watchosX64 as an architecture ([KTOR-2678](https://youtrack.jetbrains.com/issue/KTOR-2678))
+* Fixed postpone (and don't cache) name resolution in cio client ([KTOR-2513](https://youtrack.jetbrains.com/issue/KTOR-2513))
+* Improved diagnostics for exceptions inherited from IOException ([KTOR-2691](https://youtrack.jetbrains.com/issue/KTOR-2691))
+* Fixed refresh token gets stuck ([KTOR-2797](https://youtrack.jetbrains.com/issue/KTOR-2797))
+* Fixed developmentMode is on by default in tests ([KTOR-2727](https://youtrack.jetbrains.com/issue/KTOR-2727))
+* Fixed unable to run new Ktor project ([KTOR-2586](https://youtrack.jetbrains.com/issue/KTOR-2586))
+* Fixed unhandled get freezes with `CIO` server ([KTOR-333](https://youtrack.jetbrains.com/issue/KTOR-333))
+* Fixed double host header ([KTOR-379](https://youtrack.jetbrains.com/issue/KTOR-379))
+* Fixed use kotlin.reflect.jvm.javaType instead of the type token pattern in io.ktor.util.reflect.typeInfo ([KTOR-2709](https://youtrack.jetbrains.com/issue/KTOR-2709))
+* Fixed "JWK Public Key of type ""EC""" ([KTOR-2387](https://youtrack.jetbrains.com/issue/KTOR-2387))
+* Fixed lots of Run Configurations Created for Ktor Project with the Similar Names ([KTOR-2803](https://youtrack.jetbrains.com/issue/KTOR-2803))
+* Fixed ApplicationEngineEnvironmentBuilder.module { … } is executed twice on Exception ([KTOR-2734](https://youtrack.jetbrains.com/issue/KTOR-2734))
+* Researched shared indexes for Ktor ([KTOR-2774](https://youtrack.jetbrains.com/issue/KTOR-2774))
+* Fixed selecting custom package name in Ktor wizard still results in example.com import in ApplicationTest.kt ([KTOR-2707](https://youtrack.jetbrains.com/issue/KTOR-2707))
+* Fixed generated project with specific security and session features selected fails to compile / run ([KTOR-2636](https://youtrack.jetbrains.com/issue/KTOR-2636))
+* Fixed Wizard: Misleading comment in Static Feature ([KTOR-2560](https://youtrack.jetbrains.com/issue/KTOR-2560))
+* Fixed "Update ktor 1.5.0 docs. Deprecated ""challenge"" function for form auth in docs." ([KTOR-1974](https://youtrack.jetbrains.com/issue/KTOR-1974))
+* Fixed Auth Feature Code Snippet: form authentication the doesn't work ([KTOR-821](https://youtrack.jetbrains.com/issue/KTOR-821))
+* Fixed the '-ea' flag works differently when running a server using Application.module and embeddedServer ([KTOR-1758](https://youtrack.jetbrains.com/issue/KTOR-1758))
+* Fixed enabled-by-default development mode breaks reflection by overriding classloader ([KTOR-2306](https://youtrack.jetbrains.com/issue/KTOR-2306))
+* Reviewed documentation for the onUpload/onDownload client callbacks ([KTOR-2710](https://youtrack.jetbrains.com/issue/KTOR-2710))
+* Fixed Ktor fails to deliver response with error: failed with exception: kotlinx.coroutines.JobCancellationException: Parent job is Completed; ([KTOR-2711](https://youtrack.jetbrains.com/issue/KTOR-2711))
+
+# 1.6.0
+> Published 28 May 2021
+
+* Ktor fails to deliver response with error: failed with exception: kotlinx.coroutines.JobCancellationException: Parent job is Completed; ([KTOR-2711](https://youtrack.jetbrains.com/issue/KTOR-2711))
+* Wrong Tabs Name in Code Blocks ([KTOR-2726](https://youtrack.jetbrains.com/issue/KTOR-2726))
+* Apache HTTP Client does not send Content-Length header if body is empty content ([KTOR-556](https://youtrack.jetbrains.com/issue/KTOR-556))
+* Review Auth providers ([KTOR-2637](https://youtrack.jetbrains.com/issue/KTOR-2637))
+* When the main thread executes runBlocking, using the iOS engine will cause a deadlock ([KTOR-2683](https://youtrack.jetbrains.com/issue/KTOR-2683))
+* Deprecate TestApplicationCall.requestHandled ([KTOR-2712](https://youtrack.jetbrains.com/issue/KTOR-2712))
+* Update Dokka: Dokka tasks fails with old dokka version and Gradle 7 ([KTOR-2693](https://youtrack.jetbrains.com/issue/KTOR-2693))
+* Duplicate server `Features` Section on the Documentation Website ([KTOR-2702](https://youtrack.jetbrains.com/issue/KTOR-2702))
+* Duplicate entry "Features" in Server docs ([KTOR-1546](https://youtrack.jetbrains.com/issue/KTOR-1546))
+* Upgrading from 1.4.3 to 1.5.2 introduced a routing precedence ([KTOR-2278](https://youtrack.jetbrains.com/issue/KTOR-2278))
+* Sporadic OkHttp errors after upgrading to ktor 1.3.1 ([KTOR-449](https://youtrack.jetbrains.com/issue/KTOR-449))
+* Netty: server freezes after start error ([KTOR-803](https://youtrack.jetbrains.com/issue/KTOR-803))
+* aSocket().bind() sometimes throws Already bound SocketException ([KTOR-638](https://youtrack.jetbrains.com/issue/KTOR-638))
+* UDPSocketTest.testBroadcastSuccessful[jvm] is failing ([KTOR-2616](https://youtrack.jetbrains.com/issue/KTOR-2616))
+* Fix flaky CIOHttpsTest.customDomainsTest[jvm] ([KTOR-2065](https://youtrack.jetbrains.com/issue/KTOR-2065))
+* Occasionally empty response using Netty + Jackson ([KTOR-1973](https://youtrack.jetbrains.com/issue/KTOR-1973))
+* '%3D' inside query of redirect target location will be replaced to '=' ([KTOR-2057](https://youtrack.jetbrains.com/issue/KTOR-2057))
+* CIO: TLSConfigBuilder JVM allow null as password ([KTOR-940](https://youtrack.jetbrains.com/issue/KTOR-940))
+* route("{...}") stopped matching root ([KTOR-1965](https://youtrack.jetbrains.com/issue/KTOR-1965))
+* call.respond() will not check or apply ContentNegotiation for some types ([KTOR-2194](https://youtrack.jetbrains.com/issue/KTOR-2194))
+* Add support for Velocity Tools ([KTOR-2345](https://youtrack.jetbrains.com/issue/KTOR-2345))
+* Base name of micrometer metrics is not configurable ([KTOR-2210](https://youtrack.jetbrains.com/issue/KTOR-2210))
+* Support for Compression Extensions for WebSocket (RFC 7692) ([KTOR-688](https://youtrack.jetbrains.com/issue/KTOR-688))
+* Document usage of Bearer token in Http Client ([KTOR-2439](https://youtrack.jetbrains.com/issue/KTOR-2439))
+* How to track leaked buffers in ktor-io? ([KTOR-2442](https://youtrack.jetbrains.com/issue/KTOR-2442))
+* Routing: Add PutTyped and PatchTyped Overload ([KTOR-1344](https://youtrack.jetbrains.com/issue/KTOR-1344))
+* Migrate to Dokka 1.4.0 ([KTOR-1032](https://youtrack.jetbrains.com/issue/KTOR-1032))
+* Client upload/download progress observer/handler/interceptor ([KTOR-400](https://youtrack.jetbrains.com/issue/KTOR-400))
+* HTTP-client auth with Bearer token ([KTOR-331](https://youtrack.jetbrains.com/issue/KTOR-331))
+* Expose TrailingSlashRouteSelector ([KTOR-2511](https://youtrack.jetbrains.com/issue/KTOR-2511))
+* Add an option to disable URL Encoding ([KTOR-553](https://youtrack.jetbrains.com/issue/KTOR-553))
+
+# 1.5.4
+> Published 30 Apr 2021
+
+* Fixed extra trailing slashes in Route.toString ([KTOR-2427](https://youtrack.jetbrains.com/issue/KTOR-2427))
+* Fixed ByteReadChannel.read related issues ([KTOR-2615](https://youtrack.jetbrains.com/issue/KTOR-2516),
+  [KTOR-2519](https://youtrack.jetbrains.com/issue/KTOR-2519))
+* Fixed silently ignored exceptions in HTML DSL with StatusPages feature ([KTOR-756](https://youtrack.jetbrains.com/issue/KTOR-756))
+* Changed IosHttpRequestException supertype to IOException ([KTOR-2566](https://youtrack.jetbrains.com/issue/KTOR-2566))
+* Fixed utility collection implementation for K/N ([KTOR-2482](https://youtrack.jetbrains.com/issue/KTOR-2482)) 
+* Fixed client Digest auth realm handling ([KTOR-1464](https://github.com/ktorio/ktor/pull/2347))
+
 # 1.5.3
 > Published 2 Apr 2021
 

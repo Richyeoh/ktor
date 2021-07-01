@@ -1,6 +1,6 @@
 /*
- * Copyright 2014-2020 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
- */
+* Copyright 2014-2021 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
+*/
 
 package io.ktor.server.testing.suites
 
@@ -9,6 +9,7 @@ import io.ktor.client.call.*
 import io.ktor.client.statement.*
 import io.ktor.features.*
 import io.ktor.http.*
+import io.ktor.http.HttpStatusCode.Companion.InternalServerError
 import io.ktor.http.cio.*
 import io.ktor.http.content.*
 import io.ktor.request.*
@@ -22,6 +23,8 @@ import io.ktor.utils.io.jvm.javaio.*
 import io.ktor.utils.io.streams.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.debug.*
+import org.junit.*
+import org.junit.Assert.*
 import org.junit.runners.model.*
 import org.slf4j.*
 import java.io.*
@@ -30,7 +33,6 @@ import java.util.*
 import java.util.concurrent.*
 import java.util.concurrent.atomic.*
 import kotlin.concurrent.*
-import kotlin.test.*
 
 abstract class SustainabilityTestSuite<TEngine : ApplicationEngine, TConfiguration : ApplicationEngine.Configuration>(
     hostFactory: ApplicationEngineFactory<TEngine, TConfiguration>
@@ -61,7 +63,7 @@ abstract class SustainabilityTestSuite<TEngine : ApplicationEngine, TConfigurati
         }
 
         withUrl("/") {
-            assertEquals(HttpStatusCode.InternalServerError.value, status.value)
+            assertEquals(InternalServerError.value, status.value)
 
             while (true) {
                 val exception = collected.poll(timeout, TimeUnit.SECONDS)
@@ -117,8 +119,10 @@ abstract class SustainabilityTestSuite<TEngine : ApplicationEngine, TConfigurati
 
                 launch(CoroutineName("reader") + testDispatcher) {
                     use {
-                        val channel =
-                            getInputStream().toByteReadChannel(context = testDispatcher, pool = KtorDefaultPool)
+                        val channel = getInputStream().toByteReadChannel(
+                            context = testDispatcher,
+                            pool = KtorDefaultPool
+                        )
 
                         repeat(repeatCount) { requestNumber ->
                             parseResponse(channel)?.use { response ->
@@ -244,7 +248,7 @@ abstract class SustainabilityTestSuite<TEngine : ApplicationEngine, TConfigurati
 
         server!!.stop(1, 10, TimeUnit.SECONDS)
         assertNotNull(job)
-        assertTrue { job!!.isCancelled }
+        assertTrue(job!!.isCancelled)
     }
 
     @Test
@@ -498,7 +502,7 @@ abstract class SustainabilityTestSuite<TEngine : ApplicationEngine, TConfigurati
 //             TimeUnit.SECONDS.sleep(500)
 //        }
 
-            assertTrue { conns.all { it.isDone } }
+            assertTrue(conns.all { it.isDone })
         } finally {
             e.shutdownNow()
         }
@@ -539,7 +543,7 @@ abstract class SustainabilityTestSuite<TEngine : ApplicationEngine, TConfigurati
                 "HTTP/1.0 400"
             )
 
-            assertTrue(expected.any { result.startsWith(it) }, "Invalid response: $result")
+            assertTrue("Invalid response: $result", expected.any { result.startsWith(it) })
         }
     }
 
@@ -582,7 +586,7 @@ abstract class SustainabilityTestSuite<TEngine : ApplicationEngine, TConfigurati
                 "HTTP/1.0 400"
             )
 
-            assertTrue(expected.any { result.startsWith(it) }, "Invalid response: $result")
+            assertTrue("Invalid response: $result", expected.any { result.startsWith(it) })
         }
     }
 
@@ -615,8 +619,8 @@ abstract class SustainabilityTestSuite<TEngine : ApplicationEngine, TConfigurati
                 // we are expecting either 400 BadRequest or 200 OK Hello, World
                 val status = readLine().trim().split(" ")[1].toInt()
                 assertTrue(
-                    status in listOf(200, 400, 431),
-                    "status should be either 200 or 400 or 431 but it's $status"
+                    "status should be either 200 or 400 or 431 but it's $status",
+                    status in listOf(200, 400, 431)
                 )
 
                 val contentLength = parseHeadersAndGetContentLength()
@@ -655,9 +659,9 @@ abstract class SustainabilityTestSuite<TEngine : ApplicationEngine, TConfigurati
                 startServer(server)
 
                 withUrl("/") {
-                    assertEquals(HttpStatusCode.InternalServerError, status, "Failed in phase $phase")
-                    assertEquals(exceptions.size, 1, "Failed in phase $phase")
-                    assertEquals(exceptions[0].message, "Failed in phase $phase")
+                    assertEquals("Failed in phase $phase", InternalServerError, status)
+                    assertEquals("Failed in phase $phase", exceptions.size, 1)
+                    assertEquals("Failed in phase $phase", exceptions[0].message)
                     exceptions.clear()
                 }
 
@@ -693,8 +697,8 @@ abstract class SustainabilityTestSuite<TEngine : ApplicationEngine, TConfigurati
                     "/",
                     { method = HttpMethod.Post; body = "body" }
                 ) {
-                    assertEquals(HttpStatusCode.InternalServerError, status, "Failed in phase $phase")
-                    assertEquals(exceptions.size, 1, "Failed in phase $phase")
+                    assertEquals("Failed in phase $phase", InternalServerError, status)
+                    assertEquals("Failed in phase $phase", exceptions.size, 1)
                     assertEquals(exceptions[0].message, "Failed in phase $phase")
                     exceptions.clear()
                 }
@@ -734,9 +738,9 @@ abstract class SustainabilityTestSuite<TEngine : ApplicationEngine, TConfigurati
 
                 withUrl("/", { intercepted = false }) {
                     val text = receive<String>()
-                    assertEquals(HttpStatusCode.InternalServerError, status, "Failed in phase $phase")
-                    assertEquals(exceptions.size, 1, "Failed in phase $phase")
-                    assertEquals(exceptions[0].message, "Failed in phase $phase")
+                    assertEquals("Failed in phase $phase", InternalServerError, status)
+                    assertEquals("Failed in phase $phase", exceptions.size, 1)
+                    assertEquals("Failed in phase $phase", exceptions[0].message)
                     exceptions.clear()
                 }
 
@@ -767,8 +771,8 @@ abstract class SustainabilityTestSuite<TEngine : ApplicationEngine, TConfigurati
         startServer(server)
 
         withUrl("/req") {
-            assertEquals(HttpStatusCode.InternalServerError, status, "Failed in engine pipeline")
-            assertEquals(exceptions.size, 1, "Failed in phase $phase")
+            assertEquals("Failed in engine pipeline", InternalServerError, status)
+            assertEquals("Failed in phase $phase", exceptions.size, 1)
             assertEquals(exceptions[0].message, "Failed in engine pipeline")
             exceptions.clear()
         }
@@ -798,4 +802,38 @@ abstract class SustainabilityTestSuite<TEngine : ApplicationEngine, TConfigurati
             assertEquals(10000 * 13L, result.second)
         }
     }
+
+    @Test
+    fun testDoubleHost() {
+        createAndStartServer {
+            get("/") {
+                call.respond("OK")
+            }
+        }
+
+        socket {
+            val content = """
+                GET / HTTP/1.1
+                Host: www.example.com
+                Host: www.example2.com
+
+
+            """.trimIndent()
+
+            outputStream.bufferedWriter().apply {
+                write(content)
+                flush()
+            }
+
+            val response = inputStream.bufferedReader()
+            val status = response.readLine()
+
+            assertTrue(status.startsWith("HTTP/1.1 400"))
+            outputStream.close()
+        }
+    }
+}
+
+internal inline fun assertFails(block: () -> Unit) {
+    assertFailsWith<Throwable>(block)
 }

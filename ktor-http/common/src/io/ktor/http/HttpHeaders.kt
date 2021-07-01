@@ -1,6 +1,6 @@
 /*
- * Copyright 2014-2020 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
- */
+* Copyright 2014-2021 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
+*/
 
 package io.ktor.http
 
@@ -119,6 +119,9 @@ public object HttpHeaders {
     public val XForwardedServer: String = "X-Forwarded-Server"
     public val XForwardedProto: String = "X-Forwarded-Proto"
     public val XForwardedFor: String = "X-Forwarded-For"
+
+    @PublicAPICandidate("2.0.0")
+    internal val XForwardedPort: String = "X-Forwarded-Port"
 
     public val XRequestId: String = "X-Request-ID"
     public val XCorrelationId: String = "X-Correlation-ID"

@@ -1,6 +1,6 @@
 /*
- * Copyright 2014-2020 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
- */
+* Copyright 2014-2021 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
+*/
 
 package io.ktor.tests.server.netty
 
@@ -50,9 +50,9 @@ class NettyHttp2ServerTest : HttpServerTestSuite<NettyApplicationEngine, NettyAp
     }
 }
 
-class NettySustainabilityTest :
-    SustainabilityTestSuite<NettyApplicationEngine, NettyApplicationEngine.Configuration>(Netty) {
-
+class NettySustainabilityTest : SustainabilityTestSuite<NettyApplicationEngine, NettyApplicationEngine.Configuration>(
+    Netty
+) {
     init {
         enableSsl = true
     }
@@ -61,3 +61,5 @@ class NettySustainabilityTest :
         configuration.shareWorkGroup = true
     }
 }
+
+class NettyConfigTest : ConfigTestSuite(Netty)

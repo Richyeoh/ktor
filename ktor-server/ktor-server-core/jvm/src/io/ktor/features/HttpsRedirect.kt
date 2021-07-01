@@ -1,6 +1,6 @@
 /*
- * Copyright 2014-2020 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
- */
+* Copyright 2014-2021 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
+*/
 
 package io.ktor.features
 
@@ -61,7 +61,6 @@ public class HttpsRedirect(config: Configuration) {
         /**
          * Exclude calls with paths matching the [pathSuffix] from being redirected to https by this feature.
          */
-        @KtorExperimentalAPI
         public fun excludeSuffix(pathSuffix: String) {
             exclude { call ->
                 call.request.origin.uri.endsWith(pathSuffix)

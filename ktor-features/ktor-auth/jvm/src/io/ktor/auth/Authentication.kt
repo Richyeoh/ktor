@@ -1,6 +1,6 @@
 /*
- * Copyright 2014-2020 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
- */
+* Copyright 2014-2021 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
+*/
 
 package io.ktor.auth
 
@@ -325,8 +325,7 @@ public fun Route.authenticate(
  * unless you are writing an extension
  * @param names of authentication providers to be applied to this route
  */
-public class AuthenticationRouteSelector(public val names: List<String?>) :
-    RouteSelector(RouteSelectorEvaluation.qualityTransparent) {
+public class AuthenticationRouteSelector(public val names: List<String?>) : RouteSelector() {
     override fun evaluate(context: RoutingResolveContext, segmentIndex: Int): RouteSelectorEvaluation {
         return RouteSelectorEvaluation(true, RouteSelectorEvaluation.qualityTransparent)
     }

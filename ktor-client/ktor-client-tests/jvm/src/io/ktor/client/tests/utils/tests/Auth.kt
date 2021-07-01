@@ -32,6 +32,16 @@ internal fun Application.authTestServer() {
             }
         }
 
+        digest("digest-2") {
+            val password = "some password"
+            algorithmName = "MD5"
+            realm = "testrealm-2@host.com"
+
+            digestProvider { userName, realm ->
+                digest(MessageDigest.getInstance(algorithmName), "$userName:$realm:$password")
+            }
+        }
+
         basic("basic") {
             validate { credential ->
                 check("MyUser" == credential.name)
@@ -70,6 +80,11 @@ internal fun Application.authTestServer() {
                     call.respondText("ok")
                 }
             }
+            authenticate("digest-2") {
+                get("digest-2") {
+                    call.respondText("ok")
+                }
+            }
             authenticate("basic") {
                 get("basic-fixed") {
                     call.respondText("ok")
@@ -80,6 +95,48 @@ internal fun Application.authTestServer() {
                 // simulate a server which responds with 401 and another auth request on bad credentials
                 call.response.header(HttpHeaders.WWWAuthenticate, "Basic realm=\"TestServer\", charset=UTF-8")
                 call.respond(HttpStatusCode.Unauthorized)
+            }
+
+            route("bearer") {
+                get("test-refresh") {
+                    val token = call.request.headers["Authorization"]
+                    if (token.isNullOrEmpty() || token.contains("invalid")) {
+                        call.response.header(HttpHeaders.WWWAuthenticate, "Bearer realm=\"TestServer\"")
+                        call.respond(HttpStatusCode.Unauthorized)
+                        return@get
+                    }
+
+                    call.respond(HttpStatusCode.OK)
+                }
+                route("token") {
+                    get("first") {
+                        call.respond("first")
+                    }
+                    get("second") {
+                        call.respond("second")
+                    }
+                }
+                get("first") {
+                    val header = call.request.headers[HttpHeaders.Authorization]
+
+                    if (header != "Bearer first") {
+                        call.response.header(HttpHeaders.WWWAuthenticate, "Bearer")
+                        call.respond(HttpStatusCode.Unauthorized)
+                        return@get
+                    }
+
+                    call.respond("OK")
+                }
+                get("second") {
+                    val header = call.request.headers[HttpHeaders.Authorization]
+                    if (header != "Bearer second") {
+                        call.response.header(HttpHeaders.WWWAuthenticate, "Bearer")
+                        call.respond(HttpStatusCode.Unauthorized)
+                        return@get
+                    }
+
+                    call.respond("OK")
+                }
             }
         }
     }
